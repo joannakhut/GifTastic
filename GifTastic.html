@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GifTastic</title>
+
+    <!-- Bootstrap Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        crossorigin="anonymous">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="jumbotron" style="text-align: center;">
+                    <h1 class="display-4"><strong>GifTastic</strong></h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- buttons for GIFs -->
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card bg-light mb-3">
+                    <div class="card-header">RESULTS</div>
+                    <div class="card-body">
+                        <div id="buttons-view">
+                            <button data-animal="turtle">Turtle</button>
+                            <button data-animal="goat">Goat</button>
+                            <button data-animal="cat">Cat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card bg-light mb-3">
+                    <div class="card-header">SEARCH</div>
+                    <div class="card-body">
+                        <form id="gif-form">
+                            <label for="gif-input">Search GIPHY</label>
+                            <input type="text" id="gif-input">
+
+                            <!-- Button triggers new GIF to be added -->
+                            <input type="submit" class="btn btn-default" id="add-gif" value="Search "><i class="fa fa-search" onclick="click()"></i>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GIFs will appear here -->
+        <div id="gifs-view"></div>
+
+
+
+
+        <!-- JQuery Link-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+
+            // GLOBAL VARIABLES
+
+            var APIkey = "HDPCxa4sr8aJUGtWkjdGBnPVXgUG8JiY";
+
+
+            $("button").on("click", function () {
+
+
+                var gifs = $(this).attr("data-animal");
+                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=" + APIkey +
+                    "&q=" + gifs + "&limit=5&offset=0&rating=Y&lang=en";
+
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function (response) {
+                    console.log(response);
+
+                    var results = response.data;
+
+                    for (var i = 0; i < results.length; i++) {
+                        var gifDiv = $("<div>");
+                        var p = $("<p>");
+
+                        p.text("Rating: " + results[i].rating);
+
+                        var gifImg = $("<img>");
+
+                        gifImg.attr({
+                            "src": results[i].images.fixed_height.url
+                        });
+
+                        gifImg = $("<img>");
+                        gifImg.attr({
+                            "src": results[i].images.fixed_height.url
+                        });
+
+                        gifDiv.append(p, gifImg);
+                        $("#gifs-view").prepend(gifDiv);
+
+                    }
+                });
+
+                // render buttons for new gifs
+                function renderButtons() {
+                    $("#buttons-view").empty();
+                    
+                    var results = response.data;
+
+                    for (var i = 0; i < results.length; i++) {
+                        var a = $("<button>");
+                        
+                        a.attr("data-animal", results[i]);
+
+                        a.text("Rating: " + results[i].rating);
+
+                        $("#buttons-view").append(a);  
+                    }
+                }
+
+                $("#add-gif").on("click", function (event) {
+                    event.preventDefault();
+
+                    // gets text in put from search box
+                    var gif = $("#gif-input").val().trim();
+
+                    // .push will add text from search box into our array
+                    results.push(gif);
+
+                    // CALL FUNCTION
+                    renderButtons();
+                });
+            });
+            
+
+
+
+
+
+
+        </script>
+
+
+
+    </div>
+
+
+
+</body>
+
+</html>
